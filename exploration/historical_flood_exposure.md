@@ -28,7 +28,7 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from src.datasources import codab, floodscan, worldpop
-from src.utils import blob
+from src.utils import blob_utils
 ```
 
 ```python
