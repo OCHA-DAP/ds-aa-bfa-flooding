@@ -13,7 +13,7 @@ jupyter:
     name: ds-aa-bfa-flooding
 ---
 
-# SEAS5
+# EMDAT
 
 ```python
 %load_ext jupyter_black
@@ -22,22 +22,13 @@ jupyter:
 ```
 
 ```python
-from src.datasources import seas5
-from src.utils import db_utils
+from src.datasources import emdat
 ```
 
 ```python
-df = seas5.load_seas5()
+emdat_df = emdat.load_emdat()
 ```
 
 ```python
-df
-```
-
-```python
-df["leadtime"].unique()
-```
-
-```python
-
+emdat_df
 ```
