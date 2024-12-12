@@ -1,5 +1,7 @@
 # Burkina Faso Anticipatory Action: flooding
 
+Repository for potential development of anticipatory action framework for flooding Burkina Faso.
+
 ## Directory structure
 
 The code in this repository is organized as follows:
