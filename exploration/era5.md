@@ -24,13 +24,8 @@ jupyter:
 ```python
 from src.datasources import era5, cerf, codab
 from src.constants import *
-```
 
-```python
-def calculate_rp(group, col_name):
-    group[f"rank_{col_name}"] = group[col_name].rank(ascending=False)
-    group[f"rp_{col_name}"] = (len(group) + 1) / group[f"rank_{col_name}"]
-    return group
+from src.utils import blob_utils
 ```
 
 ```python
@@ -54,7 +49,6 @@ cerf_df
 ```python
 era5_adm2_df = era5.load_era5_monthly(adm_level=2)
 era5_adm1_df = era5.load_era5_monthly(adm_level=1)
-
 ```
 
 ```python
@@ -63,6 +57,21 @@ era5_adm0_df = era5.load_era5_monthly(adm_level=0)
 
 ```python
 era5_df = era5_adm2_df.copy()
+```
+
+```python
+def calculate_rp(group, col_name):
+    group[f"rank_{col_name}"] = group[col_name].rank(ascending=False)
+    group[f"rp_{col_name}"] = (len(group) + 1) / group[f"rank_{col_name}"]
+    return group
+```
+
+```python
+era5_adm0_df.dtypes
+```
+
+```python
+era5_adm0_df.groupby(era5_adm0_df["valid_date"].dt.month)["mean"].mean().plot()
 ```
 
 ```python

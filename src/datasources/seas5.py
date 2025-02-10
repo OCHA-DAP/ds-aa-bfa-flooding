@@ -6,5 +6,5 @@ from src.utils import db_utils
 def load_seas5():
     engine = db_utils.get_engine("prod")
     query = "SELECT * " "FROM public.seas5 " "WHERE iso3 = 'BFA' "
-    df = pd.read_sql(query, engine)
+    df = pd.read_sql(query, engine, parse_dates=["valid_date", "issued_date"])
     return df
