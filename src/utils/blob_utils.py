@@ -15,7 +15,6 @@ from azure.storage.blob import ContainerClient, ContentSettings
 PROD_BLOB_SAS = os.getenv("PROD_BLOB_SAS")
 DEV_BLOB_SAS = os.getenv("DEV_BLOB_SAS")
 
-PROJECT_PREFIX = "ds-aa-bfa-flooding"
 GLB_MONITORING_PROJECT_PREFIX = "ds-floodexposure-monitoring"
 
 

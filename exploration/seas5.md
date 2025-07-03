@@ -82,11 +82,11 @@ df_seas5 = seas5.load_seas5()
 ```
 
 ```python
-adm_level = 0
+df_seas5
 ```
 
 ```python
-df_seas5
+adm_level = 0
 ```
 
 ```python

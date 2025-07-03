@@ -161,8 +161,10 @@ df_year
 ```
 
 ```python
+import src.constants
+
 blob_name = (
-    f"{blob.PROJECT_PREFIX}/processed/bfa_yearly_max_flood_exposure.parquet"
+    f"{src.constants.PROJECT_PREFIX}/processed/bfa_yearly_max_flood_exposure.parquet"
 )
 blob.upload_parquet_to_blob(blob_name, df_year)
 ```

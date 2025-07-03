@@ -1,8 +1,11 @@
+import src.constants
 from src.utils import blob_utils
 
 
 def get_blob_name():
-    return f"{blob_utils.PROJECT_PREFIX}/processed/cerf/bfa_cerf_flooding.csv"
+    return (
+        f"{src.constants.PROJECT_PREFIX}/processed/cerf/bfa_cerf_flooding.csv"
+    )
 
 
 def load_cerf():
