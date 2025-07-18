@@ -14,8 +14,8 @@ jupyter:
 ---
 
 # SEAS5 2025 trigger
-
-Combining raster stats for Sahel, Boucle du Mouhoun, Centre-Nord
+<!-- markdownlint-disable MD013 -->
+Combining raster stats for Sahel and Centre-Nord
 
 ```python
 %load_ext jupyter_black
@@ -65,6 +65,22 @@ df_seas5 = df_seas5.merge(df_adm)
 ```
 
 ```python
+pcodes
+```
+
+```python
+df_seas5.columns
+```
+
+```python
+df_seas5 = df_seas5[df_seas5["pcode"].isin(pcodes)].copy()
+```
+
+```python
+df_seas5["name"].unique()
+```
+
+```python
 val_col = "mean"
 weight_col = "seas5_frac_raw_pixels"
 df_seas5["val_weighted"] = df_seas5[val_col] * df_seas5[weight_col]
@@ -109,13 +125,41 @@ df_plot[df_plot["valid_date"] == valid_date].drop(columns="valid_date").plot(
 ```
 
 ```python
+df_seas5
+```
+
+```python
+names_str = ", ".join(df_seas5["name"].unique())
+```
+
+```python
+fig, ax = plt.subplots(dpi=150)
+
+df_seas5.groupby(df_seas5["valid_date"].dt.month)["mean"].mean().plot.bar(
+    ax=ax
+)
+
+ax.set_xlabel("Mois")
+ax.set_ylabel("Précipitations prévues moyennes (mm / jour)")
+ax.set_title(f"Précipitations sur {names_str}")
+
+ax.spines.top.set_visible(False)
+ax.spines.right.set_visible(False)
+```
+
+```python
 season_months = [7, 8, 9]
+```
+
+```python
+df_seas5_grouped
 ```
 
 ```python
 df_seas5_season = df_seas5_grouped[
     (df_seas5_grouped["valid_date"] == df_seas5_grouped["issued_date"])
     & (df_seas5_grouped["valid_date"].dt.month.isin(season_months))
+    & (df_seas5_grouped["valid_date"].dt.year < 2025)
 ].copy()
 df_seas5_season["year"] = df_seas5_season["valid_date"].dt.year
 df_seas5_season["month"] = df_seas5_season["valid_date"].dt.month
@@ -137,7 +181,7 @@ for rp_ind in df_seas5_season["mean_rp"].unique():
         {"rp_ind": rp_ind, "rp_com": (total_years + 1) / dff["year"].nunique()}
     )
 
-df_rps = pd.DataFrame(dicts).sort_values("rp_ind", ascending=False)
+df_rps = pd.DataFrame(dicts).sort_values("rp_ind", ascending=True)
 ```
 
 ```python
@@ -145,56 +189,103 @@ df_rps
 ```
 
 ```python
-rp_ind = 3
+rp_ind = 3.75
 ```
 
 ```python
-df_seas5_season[df_seas5_season["month"] == 7].sort_values("mean_rank")
+rp_com = np.interp(rp_ind, df_rps["rp_ind"], df_rps["rp_com"])
 ```
 
 ```python
-min_year = 2000
+def plot_activations(rp_ind):
+    # df_rps = df_rps.sort_values("rp_ind", ascending=True)
+    rp_com = np.interp(rp_ind, df_rps["rp_ind"], df_rps["rp_com"])
+    min_year = 2000
 
-fig, axs = plt.subplots(nrows=3, figsize=(8, 8), sharex=True)
+    fig, axs = plt.subplots(nrows=3, figsize=(10, 10), sharex=True, dpi=200)
 
-trig_color = "crimson"
+    trig_color = "crimson"
 
-dicts = []
-for i, (month, group) in enumerate(df_seas5_season.groupby("month")):
-    group = group.sort_values("mean_rp").copy()
-    thresh = np.interp(rp_ind, group["mean_rp"], group["mean"])
+    dicts = []
+    for i, (month, group) in enumerate(df_seas5_season.groupby("month")):
+        group = group.sort_values("mean_rp").copy()
+        thresh = np.interp(rp_ind, group["mean_rp"], group["mean"])
 
-    ax = axs[i]
+        ax = axs[i]
 
-    df_plot = group[group["year"] >= min_year].sort_values("year")
-    colors = ["grey" if v < thresh else trig_color for v in df_plot["mean"]]
-    df_plot.plot.bar(
-        x="year", y="mean", ax=ax, legend=False, color=colors, alpha=0.6
-    )
-    ax.set_title(FRENCH_MONTHS[calendar.month_abbr[month]].capitalize())
-    ax.axhline(thresh, color=trig_color, linestyle="--", linewidth=1)
-    ax.annotate(
-        f"   Seuil :\n   {thresh:.2f} mm",
-        (len(df_plot) - 1, thresh),
-        va="center",
-        color=trig_color,
-    )
-    if i == 1:
-        ax.set_ylabel(
-            "Précipitations quotidiennes moyennes prévues (mm) [SEAS5]"
+        df_plot = group[group["year"] >= min_year].sort_values("year")
+        colors = [
+            "grey" if v < thresh else trig_color for v in df_plot["mean"]
+        ]
+        df_plot.plot.bar(
+            x="year", y="mean", ax=ax, legend=False, color=colors, alpha=0.6
         )
+        ax.set_title(FRENCH_MONTHS[calendar.month_abbr[month]].capitalize())
+        ax.axhline(thresh, color=trig_color, linestyle="--", linewidth=1)
+        ax.annotate(
+            f"   Seuil :\n   {thresh:.2f} mm",
+            (len(df_plot) - 1, thresh),
+            va="center",
+            color=trig_color,
+        )
+        if i == 1:
+            ax.set_ylabel(
+                "Précipitations quotidiennes moyennes prévues (mm) [SEAS5]"
+            )
 
-    ax.spines.top.set_visible(False)
-    ax.spines.right.set_visible(False)
+        ax.spines.top.set_visible(False)
+        ax.spines.right.set_visible(False)
 
-    dicts.append({"month": month, "thresh": thresh})
+        dicts.append({"month": month, "thresh": thresh})
 
-axs[-1].set_xlabel("Année")
-df_threshs = pd.DataFrame(dicts)
+    axs[-1].set_xlabel("Année")
+
+    fig.suptitle(
+        f"Précipitations sur {names_str}, moyenne sur toute la zone, prévues avec délai de 0 mois\n"
+        f"Période de retour par mois = {rp_ind:.1f} ans; Période de retour globale = {rp_com:.1f} ans",
+        y=0.95,
+    )
+
+    df_threshs = pd.DataFrame(dicts)
+
+    display(df_threshs)
+
+    return fig, axs
 ```
 
 ```python
-df_threshs
+df_rps
+```
+
+```python
+plot_activations(3)
+```
+
+```python
+plot_activations(3.5)
+```
+
+```python
+plot_activations(7.5)
+```
+
+```python
+plot_activations(2)
+```
+
+```python
+
+```
+
+```python
+df_seas5_grouped.dtypes
+```
+
+```python
+df_seas5_grouped[
+    (df_seas5_grouped["valid_date"] == "2025-07-01")
+    & (df_seas5_grouped["issued_date"] == "2025-07-01")
+]
 ```
 
 ```python
