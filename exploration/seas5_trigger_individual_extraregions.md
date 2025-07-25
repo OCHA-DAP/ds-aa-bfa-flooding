@@ -42,6 +42,7 @@ from src.utils import rp_calc
 ```python
 engine = stratus.get_engine("prod")
 pcodes = ADM1_AOI_PCODES_EXTRA
+# pcodes = ADM1_AOI_PCODES
 ```
 
 ```python
