@@ -4,7 +4,7 @@ from typing import Literal
 
 import xarray as xr
 
-from src.utils import blob
+from src.utils import blob_utils
 
 DATA_DIR = Path(os.getenv("AA_DATA_DIR_NEW"))
 RAW_FS_HIST_S_PATH = (
@@ -28,20 +28,20 @@ def get_blob_name(
         if date is None:
             raise ValueError("date must be provided for exposure data")
         return (
-            f"{blob.GLB_MONITORING_PROJECT_PREFIX}/processed/flood_exposure/"
-            f"{iso3}/{iso3}_exposure_{date}.tif"
+            f"{blob_utils.GLB_MONITORING_PROJECT_PREFIX}/processed/"
+            f"flood_exposure/{iso3}/{iso3}_exposure_{date}.tif"
         )
     elif data_type == "exposure_tabular":
         return (
-            f"{blob.GLB_MONITORING_PROJECT_PREFIX}/processed/flood_exposure/"
-            f"tabular/{iso3}_adm_flood_exposure.parquet"
+            f"{blob_utils.GLB_MONITORING_PROJECT_PREFIX}/processed/"
+            f"flood_exposure/tabular/{iso3}_adm_flood_exposure.parquet"
         )
     else:
         raise ValueError(f"Invalid data_type: {data_type}")
 
 
 def load_tabular_flood_exposure():
-    return blob.load_parquet_from_blob(get_blob_name("exposure_tabular"))
+    return blob_utils.load_parquet_from_blob(get_blob_name("exposure_tabular"))
 
 
 def open_historical_floodscan():

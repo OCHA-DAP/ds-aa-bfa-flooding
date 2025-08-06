@@ -15,7 +15,6 @@ from azure.storage.blob import ContainerClient, ContentSettings
 PROD_BLOB_SAS = os.getenv("PROD_BLOB_SAS")
 DEV_BLOB_SAS = os.getenv("DEV_BLOB_SAS")
 
-PROJECT_PREFIX = "ds-aa-bfa-flooding"
 GLB_MONITORING_PROJECT_PREFIX = "ds-floodexposure-monitoring"
 
 
@@ -82,6 +81,18 @@ def load_csv_from_blob(
         blob_name, stage=stage, container_name=container_name
     )
     return pd.read_csv(io.BytesIO(blob_data), **kwargs)
+
+
+def load_excel_from_blob(
+    blob_name,
+    stage: Literal["prod", "dev"] = "dev",
+    container_name: str = "projects",
+    **kwargs,
+):
+    blob_data = load_blob_data(
+        blob_name, stage=stage, container_name=container_name
+    )
+    return pd.read_excel(io.BytesIO(blob_data), **kwargs)
 
 
 def upload_gdf_to_blob(
