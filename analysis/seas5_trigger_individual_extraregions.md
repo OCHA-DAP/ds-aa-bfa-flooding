@@ -167,6 +167,10 @@ rp_ind = 3
 ```
 
 ```python
+name_group
+```
+
+```python
 min_year = 2000
 
 fig, axs = plt.subplots(nrows=3, figsize=(10, 10), sharex=True, dpi=200)
@@ -232,6 +236,13 @@ for i, (month, group) in enumerate(df_plot.groupby("month")):
             color=color,
             fontsize=8,
         )
+        dicts.append(
+            {
+                "month": month,
+                "pcode": name_group.iloc[0]["pcode"],
+                "thresh": thresh,
+            }
+        )
 
     ax.set_xticks(x)
     ax.set_xlim((-1, len(name_group_plot)))
@@ -245,8 +256,6 @@ for i, (month, group) in enumerate(df_plot.groupby("month")):
 
     ax.spines.top.set_visible(False)
     ax.spines.right.set_visible(False)
-
-    dicts.append({"month": month, "thresh": thresh})
 
 rp_region = (total_years + 1) / df_plot[df_plot["trig"]].groupby("name")[
     "year"
@@ -277,17 +286,162 @@ fig.text(
 )
 ```
 
-## Current values
+```python
+df_threshs = pd.DataFrame(dicts)
+```
 
-Just looking at the values from July 2025, since this is excluded from the plots above.
+```python
+df_threshs
+```
 
-Looks like we would've actually triggered for Sud-Ouest
+## Monitoring
+
+Plotting the values from 2025 for monitoring.
+
+```python
+df_seas5_grouped["issued_date"].max()
+```
 
 ```python
 df_seas5_grouped[
-    (df_seas5_grouped["valid_date"] == "2025-07-01")
-    & (df_seas5_grouped["issued_date"] == "2025-07-01")
+    (df_seas5_grouped["valid_date"] == "2025-08-01")
+    & (df_seas5_grouped["issued_date"] == "2025-08-01")
 ]
+```
+
+```python
+df_seas5_season_recent = df_seas5_grouped[
+    (df_seas5_grouped["valid_date"] == df_seas5_grouped["issued_date"])
+    & (df_seas5_grouped["valid_date"].dt.month.isin(season_months))
+].copy()
+df_seas5_season_recent["year"] = df_seas5_season_recent["valid_date"].dt.year
+df_seas5_season_recent["month"] = df_seas5_season_recent["valid_date"].dt.month
+df_seas5_season_recent = df_seas5_season_recent.drop(
+    columns=["valid_date", "issued_date"]
+)
+df_seas5_season_recent["short_name"] = df_seas5_season_recent["name"].replace(
+    short_names
+)
+```
+
+```python
+min_year = 2020
+
+fig, axs = plt.subplots(nrows=3, figsize=(10, 10), sharex=True, dpi=200)
+
+trig_colors = ["orange", "dodgerblue", "salmon", "limegreen", "orchid"]
+vas = ["bottom", "top"]
+
+df_plot = df_seas5_season_recent.copy()
+df_plot["trig"] = False
+
+years = range(min_year, df_plot["year"].max() + 1)
+
+dicts = []
+for i, (month, group) in enumerate(df_plot.groupby("month")):
+    ax = axs[i]
+
+    for j, (name, name_group) in enumerate(group.groupby("short_name")):
+        color = trig_colors[j]
+        pcode = name_group.iloc[0]["pcode"]
+        thresh = df_threshs[
+            (df_threshs["pcode"] == pcode) & (df_threshs["month"] == month)
+        ].iloc[0]["thresh"]
+        name_group["trig"] = name_group["mean"] >= thresh
+
+        # set triggered years for later per-region rp calculation
+        df_plot.loc[
+            (df_plot["mean"] >= thresh)
+            & (df_plot["short_name"] == name)
+            & (df_plot["month"] == month),
+            "trig",
+        ] = True
+
+        name_group_plot = name_group[
+            name_group["year"] >= min_year
+        ].sort_values("year")
+
+        x = np.arange(len(name_group_plot.index))
+        bar_width = 0.15
+        values = name_group_plot["mean"]
+        offset = (j - 2) * bar_width
+
+        # Set alpha based on threshold comparison
+        alphas = name_group_plot["trig"].apply(lambda v: 1 if v else 0.2)
+
+        # Plot individual bars with varying alpha
+        for xi, yi, alpha in zip(x, values, alphas):
+            ax.bar(xi + offset, yi, width=bar_width, color=color, alpha=alpha)
+
+        ax.axhline(thresh, color=color, linestyle="--", linewidth=1)
+        annotation = f" {name} : " + f"{thresh:.2f} mm".replace(".", ",")
+        y_adj = 0
+        if month == 7:
+            if name in ["C.-Nord", "Nord"]:
+                y_adj = 0.15
+            if name == "S.-Ouest":
+                y_adj = -0.15
+        if month == 9:
+            if name == "Nord":
+                y_adj = 0.1
+            if name == "C.-Nord":
+                y_adj = -0.1
+
+        ax.annotate(
+            annotation,
+            (len(years) - 0.5, thresh + y_adj),
+            va="center",
+            color=color,
+            fontsize=8,
+        )
+        dicts.append(
+            {
+                "month": month,
+                "pcode": name_group.iloc[0]["pcode"],
+                "thresh": thresh,
+            }
+        )
+
+    ax.set_xticks(range(len(years)))
+    ax.set_xlim((-0.75, len(name_group_plot) + 0.5))
+    ax.set_xticklabels(years, rotation=90)
+    ax.set_title(FRENCH_MONTHS[calendar.month_abbr[month]].capitalize())
+
+    if i == 1:
+        ax.set_ylabel(
+            "Précipitations quotidiennes moyennes prévues (mm) [SEAS5]"
+        )
+
+    ax.spines.top.set_visible(False)
+    ax.spines.right.set_visible(False)
+
+rp_region = (total_years + 1) / df_plot[df_plot["trig"]].groupby("name")[
+    "year"
+].nunique().mean()
+rp_com = (total_years + 1) / df_plot[df_plot["trig"]]["year"].nunique()
+
+axs[-1].set_xlabel("Année")
+
+fig.suptitle(
+    f"Précipitations sur {names_str},\nmoyenne sur toute la région, prévues avec délai de 0 mois\n",
+    y=0.99,
+)
+
+rp_str = (
+    "Périodes de retour :\n"
+    f"Par mois, par région = {rp_ind:.1f} ans ; "
+    f"Par région (moyenne) = {rp_region:.1f} ans ; "
+    f"Globale = {rp_com:.1f} ans"
+).replace(".", ",")
+
+fig.text(
+    0.5,
+    0.92,
+    rp_str,
+    ha="center",
+    fontsize=10,
+    color="gray",
+)
 ```
 
 ```python
