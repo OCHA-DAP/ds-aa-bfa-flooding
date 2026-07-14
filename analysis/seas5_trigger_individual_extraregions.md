@@ -6,7 +6,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.16.1
+      jupytext_version: 1.19.4
   kernelspec:
     display_name: ds-aa-bfa-flooding
     language: python
@@ -156,6 +156,19 @@ short_names = {
 df_seas5_season["short_name"] = df_seas5_season["name"].replace(short_names)
 ```
 
+```python
+df_seas5_season
+```
+
+```python
+filename = "bfa-seas5-jas-5regions.csv"
+filepath = "temp/" + filename
+```
+
+```python
+df_seas5_season.to_csv(filepath, index=False)
+```
+
 ## Plot thresholds and historical values
 
 Specify the per-region, per-month return period, and use this to get the per-region, per-month thresholds.
@@ -164,10 +177,6 @@ Plot which historical years would have activated for each month, in each region.
 
 ```python
 rp_ind = 3
-```
-
-```python
-name_group
 ```
 
 ```python
@@ -296,7 +305,8 @@ df_threshs
 
 ## Monitoring
 
-Plotting the values from 2025 for monitoring.
+Plotting the values from 2026 for monitoring. Thresholds are unchanged from
+the 2025 framework (calculated above, using years up to 2024).
 
 ```python
 df_seas5_grouped["issued_date"].max()
@@ -304,8 +314,8 @@ df_seas5_grouped["issued_date"].max()
 
 ```python
 df_seas5_grouped[
-    (df_seas5_grouped["valid_date"] == "2025-08-01")
-    & (df_seas5_grouped["issued_date"] == "2025-08-01")
+    (df_seas5_grouped["valid_date"] == "2026-07-01")
+    & (df_seas5_grouped["issued_date"] == "2026-07-01")
 ]
 ```
 
@@ -327,7 +337,7 @@ df_seas5_season_recent["short_name"] = df_seas5_season_recent["name"].replace(
 ```python
 min_year = 2020
 
-fig, axs = plt.subplots(nrows=3, figsize=(10, 10), sharex=True, dpi=200)
+fig, axs = plt.subplots(nrows=3, figsize=(10, 10), sharex=True, dpi=100)
 
 trig_colors = ["orange", "dodgerblue", "salmon", "limegreen", "orchid"]
 vas = ["bottom", "top"]
@@ -403,7 +413,7 @@ for i, (month, group) in enumerate(df_plot.groupby("month")):
         )
 
     ax.set_xticks(range(len(years)))
-    ax.set_xlim((-0.75, len(name_group_plot) + 0.5))
+    ax.set_xlim((-0.75, len(years) - 0.5))
     ax.set_xticklabels(years, rotation=90)
     ax.set_title(FRENCH_MONTHS[calendar.month_abbr[month]].capitalize())
 
