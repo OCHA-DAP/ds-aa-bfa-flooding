@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Burkina Faso — Suivi AA inondations (SEAS5)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hdx-primary-5: #1862d8;
+    --hdx-primary-8: #0a2756;
+    --hdx-neutral-05: #f5f7f7;
+    --hdx-neutral-2: #d8e0e1;
+    --hdx-neutral-7: #5e6a6b;
+    --hdx-neutral-9: #1f2324;
+    --hdx-font-body: 'Roboto', sans-serif;
+    --hdx-font-display: 'Merriweather', serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: var(--hdx-font-body);
+    color: var(--hdx-neutral-9);
+    background: var(--hdx-neutral-05);
+  }
+  header {
+    background: var(--hdx-primary-8);
+    color: #ffffff;
+    padding: 1.5rem 1rem;
+  }
+  header .wrap, main { max-width: 60rem; margin: 0 auto; }
+  h1 {
+    font-family: var(--hdx-font-display);
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  header p { margin-top: 0.5rem; opacity: 0.85; font-size: 0.95rem; }
+  main { padding: 1.5rem 1rem 3rem; }
+  .status {
+    background: #ffffff;
+    border: 1px solid var(--hdx-neutral-2);
+    border-left: 4px solid var(--hdx-primary-5);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .status strong { color: var(--hdx-primary-8); }
+  figure {
+    background: #ffffff;
+    border: 1px solid var(--hdx-neutral-2);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+  figure img { max-width: 100%; height: auto; display: block; }
+  figcaption {
+    color: var(--hdx-neutral-7);
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    line-height: 1.5;
+  }
+  footer {
+    color: var(--hdx-neutral-7);
+    font-size: 0.85rem;
+    margin-top: 2rem;
+    line-height: 1.5;
+  }
+  a { color: var(--hdx-primary-5); }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Burkina Faso — Action anticipatoire inondations<br>Suivi des prévisions SEAS5</h1>
+    <p>Dernière mise à jour : prévision émise le 1<sup>er</sup> juillet 2026</p>
+  </div>
+</header>
+<main>
+  <div class="status">
+    <strong>Juillet 2026 : aucun seuil atteint.</strong>
+    Les précipitations prévues (délai de 0 mois) restent en dessous du seuil
+    de déclenchement (période de retour de 3 ans) dans les cinq régions
+    suivies : Sahel, Centre-Nord, Nord, Boucle du Mouhoun et Sud-Ouest.
+  </div>
+  <figure>
+    <img src="plots/bfa_seas5_monitoring_2026-07.png"
+         alt="Précipitations quotidiennes moyennes prévues par SEAS5 (juillet, août, septembre), par région et par année, comparées aux seuils de déclenchement">
+    <figcaption>
+      Précipitations quotidiennes moyennes prévues par SEAS5 avec un délai de
+      0 mois, moyennées sur chaque région. Les barres opaques indiquent les
+      années où le seuil (ligne pointillée, période de retour de 3 ans,
+      calculée sur 1981–2024) est atteint. Les prévisions d’août et de
+      septembre 2026 seront ajoutées dès leur publication.
+    </figcaption>
+  </figure>
+  <footer>
+    Code et analyse :
+    <a href="https://github.com/OCHA-DAP/ds-aa-bfa-flooding">OCHA-DAP/ds-aa-bfa-flooding</a>
+    — Centre de données humanitaires (OCHA), équipe science des données.
+  </footer>
+</main>
+</body>
+</html>
