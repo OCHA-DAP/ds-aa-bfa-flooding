@@ -15,6 +15,8 @@
     --hdx-neutral-2: #d8e0e1;
     --hdx-neutral-7: #5e6a6b;
     --hdx-neutral-9: #1f2324;
+    --hdx-red-5: #f2645a;
+    --hdx-red-7: #a5160f;
     --hdx-font-body: 'Roboto', sans-serif;
     --hdx-font-display: 'Merriweather', serif;
   }
@@ -47,6 +49,10 @@
     line-height: 1.5;
   }
   .status strong { color: var(--hdx-primary-8); }
+  .status.alert { border-left-color: var(--hdx-red-5); }
+  .status.alert strong { color: var(--hdx-red-7); }
+  .status ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+  .status li { margin-top: 0.25rem; }
   figure {
     background: #ffffff;
     border: 1px solid var(--hdx-neutral-2);
@@ -73,25 +79,34 @@
 <header>
   <div class="wrap">
     <h1>Burkina Faso — Action anticipatoire inondations<br>Suivi des prévisions SEAS5</h1>
-    <p>Dernière mise à jour : prévision émise le 5 juillet 2026</p>
+    <p>Dernière mise à jour : prévision émise le 5 août 2026</p>
   </div>
 </header>
 <main>
+  <div class="status alert">
+    <strong>Août 2026 : seuil atteint dans deux régions.</strong>
+    Les précipitations prévues pour août (délai de 0 mois) dépassent le seuil
+    de déclenchement (période de retour de 3 ans) dans :
+    <ul>
+      <li>Boucle du Mouhoun : 9,67 mm/jour prévus (seuil 9,42 mm/jour)</li>
+      <li>Sud-Ouest : 7,99 mm/jour prévus (seuil 7,04 mm/jour)</li>
+    </ul>
+  </div>
   <div class="status">
-    <strong>Juillet 2026 : aucun seuil atteint.</strong>
-    Les précipitations prévues (délai de 0 mois) restent en dessous du seuil
-    de déclenchement (période de retour de 3 ans) dans les cinq régions
-    suivies : Sahel, Centre-Nord, Nord, Boucle du Mouhoun et Sud-Ouest.
+    Les trois autres régions suivies restent en dessous de leur seuil :
+    Nord (7,52 mm/jour ; seuil 8,65), Centre-Nord (6,81 ; seuil 8,32) et
+    Sahel (5,80 ; seuil 7,55). En juillet 2026, aucune des cinq régions
+    n’avait atteint son seuil.
   </div>
   <figure>
-    <img src="plots/bfa_seas5_monitoring_2026-07.png"
+    <img src="plots/bfa_seas5_monitoring_2026-08.png"
          alt="Précipitations quotidiennes moyennes prévues par SEAS5 (juillet, août, septembre), par région et par année, comparées aux seuils de déclenchement">
     <figcaption>
       Précipitations quotidiennes moyennes prévues par SEAS5 avec un délai de
       0 mois, moyennées sur chaque région. Les barres opaques indiquent les
       années où le seuil (ligne pointillée, période de retour de 3 ans,
-      calculée sur 1981–2024) est atteint. Les prévisions d’août et de
-      septembre 2026 seront ajoutées dès leur publication.
+      calculée sur 1981–2024) est atteint. Les prévisions de septembre 2026
+      seront ajoutées dès leur publication.
     </figcaption>
   </figure>
   <footer>
