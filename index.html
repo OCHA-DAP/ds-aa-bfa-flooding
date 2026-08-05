@@ -37,6 +37,14 @@
     font-size: 1.5rem;
     line-height: 1.3;
   }
+  h2 {
+    font-family: var(--hdx-font-display);
+    font-size: 1.1rem;
+    line-height: 1.3;
+    margin: 2rem 0 0.75rem;
+    color: var(--hdx-primary-8);
+  }
+  main > p { line-height: 1.5; margin-bottom: 1rem; }
   header p { margin-top: 0.5rem; opacity: 0.85; font-size: 0.95rem; }
   main { padding: 1.5rem 1rem 3rem; }
   .status {
@@ -91,6 +99,11 @@
       <li>Boucle du Mouhoun : 9,67 mm/jour prévus (seuil 9,42 mm/jour)</li>
       <li>Sud-Ouest : 7,99 mm/jour prévus (seuil 7,04 mm/jour)</li>
     </ul>
+    <p style="margin-top:0.75rem">
+      La compétence de la prévision diffère nettement entre ces deux régions —
+      voir <a href="#competence">compétence des prévisions</a> ci-dessous avant
+      toute interprétation.
+    </p>
   </div>
   <div class="status">
     Les trois autres régions suivies restent en dessous de leur seuil :
@@ -109,6 +122,48 @@
       seront ajoutées dès leur publication.
     </figcaption>
   </figure>
+  <h2 id="competence">Référence : compétence des prévisions</h2>
+  <p>
+    Un seuil atteint n’a de valeur que si la prévision qui le déclenche a une
+    compétence démontrée pour le mois et la région concernés. La figure
+    ci-dessous compare les prévisions SEAS5 à délai de 0 mois aux observations
+    ERA5 sur 1981–2025, pour chaque région et chaque mois suivi.
+  </p>
+  <p>
+    Deux mesures sont présentées. La <strong>corrélation</strong> résume
+    l’accord sur l’ensemble de la distribution. La
+    <strong>discrimination du tiers le plus humide</strong> répond à la
+    question directement pertinente ici : lorsque la prévision est élevée,
+    le mois observé est-il effectivement parmi les plus humides ? Une
+    corrélation correcte peut coexister avec une discrimination proche du
+    hasard dans la queue haute — c’est précisément le cas qui doit nuancer
+    une alerte.
+  </p>
+  <figure>
+    <img src="plots/bfa_seas5_skill.png"
+         alt="Compétence des prévisions SEAS5 à délai de 0 mois par région et par mois : corrélation de Pearson et discrimination du tiers le plus humide, 1981-2025">
+    <figcaption>
+      Méthodologie reprise de
+      <a href="https://github.com/OCHA-DAP/ds-seas5-skill">ds-seas5-skill</a>
+      (normalisation en espace logarithmique de SEAS5 sur la moyenne et
+      l’écart-type d’ERA5, puis corrélation), appliquée ici par mois
+      individuel et par région admin-1 plutôt que par trimestre et par pays.
+      Les cases hachurées ne se distinguent pas statistiquement d’une absence
+      de compétence.
+    </figcaption>
+  </figure>
+  <div class="status">
+    <strong>Lecture pour août 2026.</strong>
+    Les deux dépassements ne se valent pas. Pour la
+    <strong>Boucle du Mouhoun</strong>, août est le mois le mieux prévu de la
+    série (corrélation 0,63 ; discrimination 0,77) : le dépassement est faible
+    (+3 %) mais la prévision est fiable. Pour le <strong>Sud-Ouest</strong>,
+    le dépassement est net (+14 %) mais la discrimination du tiers le plus
+    humide en août est de 0,54, statistiquement indistinguable du hasard : la
+    prévision n’a pas démontré de capacité à identifier les mois d’août les
+    plus humides dans cette région. Ce dépassement doit donc être interprété
+    avec prudence.
+  </div>
   <footer>
     Code et analyse :
     <a href="https://github.com/OCHA-DAP/ds-aa-bfa-flooding">OCHA-DAP/ds-aa-bfa-flooding</a>
