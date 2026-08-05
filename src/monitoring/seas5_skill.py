@@ -228,7 +228,7 @@ n_min, n_max = df_skill["n_years"].min(), df_skill["n_years"].max()
 y0, y1 = df_skill["year_min"].min(), df_skill["year_max"].max()
 n_str = f"{n_min}" if n_min == n_max else f"{n_min}–{n_max}"
 fig.suptitle(
-    "Compétence des prévisions SEAS5 à délai de 0 mois, "
+    "Performance des prévisions SEAS5 à délai de 0 mois, "
     "par région et par mois",
     fontsize=11,
     y=1.06,
@@ -237,10 +237,10 @@ fig.text(
     0.5,
     -0.16,
     f"SEAS5 vs ERA5, {y0}–{y1} ({n_str} ans). Gauche : corrélation de "
-    "Pearson (0 = aucune compétence).\nDroite : capacité à distinguer le "
+    "Pearson (0 = performance nulle).\nDroite : capacité à distinguer le "
     "tiers des mois les plus humides (0,5 = équivalent au hasard).\n"
     "Les cases hachurées ne se distinguent pas statistiquement d’une absence "
-    "de compétence (p ≥ 0,05).",
+    "de performance (p ≥ 0,05).",
     ha="center",
     fontsize=8,
     color="#5e6a6b",
