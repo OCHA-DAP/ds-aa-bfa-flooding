@@ -17,6 +17,10 @@
     --hdx-neutral-9: #1f2324;
     --hdx-red-5: #f2645a;
     --hdx-red-7: #a5160f;
+    --hdx-warning-05: #fbf4ea;
+    --hdx-warning-2: #eed2aa;
+    --hdx-warning-5: #d48f2a;
+    --hdx-warning-8: #553911;
     --hdx-font-body: 'Roboto', sans-serif;
     --hdx-font-display: 'Merriweather', serif;
   }
@@ -31,7 +35,20 @@
     color: #ffffff;
     padding: 1.5rem 1rem;
   }
-  header .wrap, main { max-width: 60rem; margin: 0 auto; }
+  header .wrap, .notice .wrap, main { max-width: 60rem; margin: 0 auto; }
+  .notice {
+    background: var(--hdx-warning-05);
+    border-bottom: 1px solid var(--hdx-warning-2);
+    padding: 0.75rem 1rem;
+  }
+  .notice .wrap {
+    border-left: 4px solid var(--hdx-warning-5);
+    padding-left: 1rem;
+    color: var(--hdx-warning-8);
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+  .notice strong { color: var(--hdx-warning-8); }
   h1 {
     font-family: var(--hdx-font-display);
     font-size: 1.5rem;
@@ -90,6 +107,13 @@
     <p>Dernière mise à jour : prévision émise le 5 août 2026</p>
   </div>
 </header>
+<div class="notice">
+  <div class="wrap">
+    <strong>Cadre non actif.</strong> Le cadre d’action anticipatoire n’est pas
+    actuellement actif : ce suivi est publié à titre purement informatif, et un
+    dépassement de seuil ne déclenche ni financement ni action.
+  </div>
+</div>
 <main>
   <div class="status alert">
     <strong>Août 2026 : seuil atteint dans deux régions.</strong>
