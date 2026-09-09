@@ -3,201 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Burkina Faso — Suivi AA inondations (SEAS5)</title>
+<title>Burkina Faso — Action anticipatoire inondations</title>
+<meta name="description" content="Suivi des prévisions saisonnières SEAS5 pour le cadre d’action anticipatoire inondations au Burkina Faso, avec les documents et le code associés — Centre de données humanitaires (OCHA).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --hdx-primary-5: #1862d8;
-    --hdx-primary-8: #0a2756;
-    --hdx-neutral-05: #f5f7f7;
-    --hdx-neutral-2: #d8e0e1;
-    --hdx-neutral-7: #5e6a6b;
-    --hdx-neutral-9: #1f2324;
-    --hdx-red-5: #f2645a;
-    --hdx-red-7: #a5160f;
-    --hdx-warning-05: #fbf4ea;
-    --hdx-warning-2: #eed2aa;
-    --hdx-warning-5: #d48f2a;
-    --hdx-warning-8: #553911;
-    --hdx-font-body: 'Roboto', sans-serif;
-    --hdx-font-display: 'Merriweather', serif;
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>
+// The site root USED to be the monitoring page itself, so links people saved
+// point here — in particular /#performance, the anchor of its forecast-skill
+// section. After the restructure those land on this landing page with the hash
+// silently ignored. Forward them, narrowly: only a recognised anchor triggers
+// it, so a plain visit to "/" still shows this page. Runs before render
+// (blocking, in <head>) so there is no flash; replace() keeps the hop out of
+// the back button.
+(function () {
+  var ANCHORS = ["performance"];
+  var hash = location.hash.replace(/^#/, "");
+  if (ANCHORS.indexOf(hash) >= 0) {
+    location.replace("monitoring/" + location.search + location.hash);
   }
-  * { box-sizing: border-box; margin: 0; }
-  body {
-    font-family: var(--hdx-font-body);
-    color: var(--hdx-neutral-9);
-    background: var(--hdx-neutral-05);
-  }
-  header {
-    background: var(--hdx-primary-8);
-    color: #ffffff;
-    padding: 1.5rem 1rem;
-  }
-  header .wrap, .notice .wrap, main { max-width: 60rem; margin: 0 auto; }
-  .notice {
-    background: var(--hdx-warning-05);
-    border-bottom: 1px solid var(--hdx-warning-2);
-    padding: 0.75rem 1rem;
-  }
-  .notice .wrap {
-    border-left: 4px solid var(--hdx-warning-5);
-    padding-left: 1rem;
-    color: var(--hdx-warning-8);
-    line-height: 1.5;
-    font-size: 0.95rem;
-  }
-  .notice strong { color: var(--hdx-warning-8); }
-  h1 {
-    font-family: var(--hdx-font-display);
-    font-size: 1.5rem;
-    line-height: 1.3;
-  }
-  h2 {
-    font-family: var(--hdx-font-display);
-    font-size: 1.1rem;
-    line-height: 1.3;
-    margin: 2rem 0 0.75rem;
-    color: var(--hdx-primary-8);
-  }
-  main > p { line-height: 1.5; margin-bottom: 1rem; }
-  header p { margin-top: 0.5rem; opacity: 0.85; font-size: 0.95rem; }
-  main { padding: 1.5rem 1rem 3rem; }
-  .status {
-    background: #ffffff;
-    border: 1px solid var(--hdx-neutral-2);
-    border-left: 4px solid var(--hdx-primary-5);
-    border-radius: 4px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-  }
-  .status strong { color: var(--hdx-primary-8); }
-  .status.alert { border-left-color: var(--hdx-red-5); }
-  .status.alert strong { color: var(--hdx-red-7); }
-  .status ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
-  .status li { margin-top: 0.25rem; }
-  figure {
-    background: #ffffff;
-    border: 1px solid var(--hdx-neutral-2);
-    border-radius: 4px;
-    padding: 1rem;
-  }
-  figure img { max-width: 100%; height: auto; display: block; }
-  figcaption {
-    color: var(--hdx-neutral-7);
-    font-size: 0.85rem;
-    margin-top: 0.75rem;
-    line-height: 1.5;
-  }
-  footer {
-    color: var(--hdx-neutral-7);
-    font-size: 0.85rem;
-    margin-top: 2rem;
-    line-height: 1.5;
-  }
-  a { color: var(--hdx-primary-5); }
-</style>
+})();
+</script>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>Burkina Faso — Action anticipatoire inondations<br>Suivi des prévisions SEAS5</h1>
-    <p>Dernière mise à jour : prévision émise le 5 septembre 2026</p>
+<div class="wrap">
+
+  <header class="hero">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="eyebrow">Centre de données humanitaires (OCHA)</p>
+      <h1>Burkina Faso — Action anticipatoire inondations</h1>
+      <p>Le Plan national d’action anticipatoire pour les inondations (PNAAI
+         2025–2027) s’appuie sur les prévisions saisonnières SEAS5 d’ECMWF :
+         chaque mois de la saison des pluies (juillet, août, septembre), les
+         précipitations prévues sont comparées à des seuils régionaux de
+         période de retour de 3 ans. Cette page rassemble le suivi mensuel de
+         ces prévisions, le document du cadre et le code d’analyse.</p>
+    </div>
+  </header>
+
+  <div class="notice">
+    <p><strong>Cadre non actif.</strong> Le cadre d’action anticipatoire n’est pas
+       actuellement actif : le suivi publié ici est purement informatif, et un
+       dépassement de seuil ne déclenche ni financement ni action.</p>
   </div>
-</header>
-<div class="notice">
-  <div class="wrap">
-    <strong>Cadre non actif.</strong> Le cadre d’action anticipatoire n’est pas
-    actuellement actif : ce suivi est publié à titre purement informatif, et un
-    dépassement de seuil ne déclenche ni financement ni action.
+
+  <main>
+    <!-- The monitoring page gets a row to itself, with its plot. It lived at /
+         until the restructure, so most people arriving here typed ITS address;
+         the plot is the fastest way for someone who knows the page to see they
+         are one click from it. -->
+    <p class="label">Suivi</p>
+    <div class="grid grid-one">
+
+      <a class="k k-feature" href="monitoring/">
+        <span class="body">
+          <h2>Suivi des prévisions SEAS5 — saison 2026</h2>
+          <p>Prévisions de précipitations SEAS5 à délai de 0 mois pour juillet,
+             août et septembre, moyennées sur chacune des cinq régions suivies
+             (Boucle du Mouhoun, Centre-Nord, Nord, Sahel, Sud-Ouest) et
+             comparées aux seuils de déclenchement. Mis à jour chaque mois après
+             la publication de la prévision, le 5.</p>
+          <span class="views">État du mois · Bilan de la saison · Historique
+             depuis 2020 · Performance des prévisions par région et par mois</span>
+          <span class="foot"><em>/monitoring/</em><span>Déplacé depuis /</span></span>
+        </span>
+        <span class="shot">
+          <!-- Decorative: the card's own heading and text already say what this
+               is, so alt="" keeps a screen reader from reading the plot twice. -->
+          <img src="monitoring/plots/bfa_seas5_monitoring_2026-09.png" alt=""
+               width="960" height="958" loading="lazy">
+        </span>
+      </a>
+
+    </div>
+
+    <p class="label label-2">Documents et code</p>
+    <div class="grid">
+
+      <a class="k" href="https://reliefweb.int/report/burkina-faso/plan-national-daction-anticipatoire-pour-les-inondations-au-burkina-faso-2025-2027-version-finale">
+        <h2>Plan national d’action anticipatoire pour les inondations
+            2025–2027<span class="chip chip-ext">externe</span></h2>
+        <p>Le document du cadre (version finale, août 2025) : scénarios de
+           déclenchement, seuils régionaux (Tableau 9), régions ciblées,
+           financement pré-arrangé et actions anticipatoires prévues.</p>
+        <span class="foot"><em>reliefweb.int</em></span>
+      </a>
+
+      <a class="k" href="https://github.com/OCHA-DAP/ds-aa-bfa-flooding">
+        <h2>Code et analyse<span class="chip chip-ext">externe</span></h2>
+        <p>Dépôt GitHub : calcul des seuils (période de retour empirique sur
+           1981–2024), scripts de suivi mensuel et de performance des prévisions,
+           et carnets d’analyse ayant servi à la conception du déclencheur.</p>
+        <span class="foot"><em>github.com/OCHA-DAP</em></span>
+      </a>
+
+    </div>
+  </main>
+
+  <div class="note">
+    <p><strong>Accès.</strong> Tout ce qui est listé ici est public — sans
+       identifiant ni mot de passe.</p>
+    <p><strong>Ajouter une page ?</strong> Créer un répertoire avec un
+       <code>index.html</code> sur la branche <code>gh-pages</code> et ajouter
+       une carte ci-dessus. Le suivi mensuel est produit par
+       <code>src/monitoring/</code> dans le dépôt et publié directement sur
+       cette branche.</p>
   </div>
+
 </div>
-<main>
-  <div class="status">
-    <strong>Septembre 2026 : aucun seuil atteint.</strong>
-    Les précipitations prévues pour septembre (délai de 0 mois) restent en
-    dessous du seuil de déclenchement (période de retour de 3 ans) dans les
-    cinq régions suivies :
-    <ul>
-      <li>Boucle du Mouhoun : 4,63 mm/jour prévus (seuil 7,22 mm/jour)</li>
-      <li>Sud-Ouest : 5,46 mm/jour prévus (seuil 6,75 mm/jour)</li>
-      <li>Nord : 3,51 mm/jour prévus (seuil 5,47 mm/jour)</li>
-      <li>Centre-Nord : 3,48 mm/jour prévus (seuil 5,31 mm/jour)</li>
-      <li>Sahel : 2,28 mm/jour prévus (seuil 3,77 mm/jour)</li>
-    </ul>
-  </div>
-  <div class="status alert">
-    <strong>Bilan de la saison 2026.</strong>
-    Sur les trois mois suivis (juillet, août, septembre), le seuil n’a été
-    atteint qu’en <strong>août</strong>, dans deux régions : Boucle du Mouhoun
-    (9,67 mm/jour prévus ; seuil 9,42) et Sud-Ouest (7,99 ; seuil 7,04). Aucune
-    région n’a atteint son seuil en juillet ni en septembre.
-    <p style="margin-top:0.75rem">
-      La performance de la prévision d’août diffère nettement entre ces deux
-      régions — voir <a href="#performance">performance des prévisions</a>
-      ci-dessous avant toute interprétation.
-    </p>
-  </div>
-  <figure>
-    <img src="plots/bfa_seas5_monitoring_2026-09.png"
-         alt="Précipitations quotidiennes moyennes prévues par SEAS5 (juillet, août, septembre), par région et par année, comparées aux seuils de déclenchement">
-    <figcaption>
-      Précipitations quotidiennes moyennes prévues par SEAS5 avec un délai de
-      0 mois, moyennées sur chaque région. Les barres opaques indiquent les
-      années où le seuil (ligne pointillée, période de retour de 3 ans,
-      calculée sur 1981–2024) est atteint. Avec la prévision de septembre, la
-      saison de suivi 2026 est complète.
-    </figcaption>
-  </figure>
-  <h2 id="performance">Référence : performance des prévisions</h2>
-  <p>
-    Un seuil atteint n’a de valeur que si la prévision qui le déclenche a une
-    performance démontrée pour le mois et la région concernés. La figure
-    ci-dessous compare les prévisions SEAS5 à délai de 0 mois aux observations
-    ERA5 sur 1981–2025, pour chaque région et chaque mois suivi.
-  </p>
-  <p>
-    Deux mesures sont présentées. La <strong>corrélation</strong> résume
-    l’accord sur l’ensemble de la distribution. La
-    <strong>discrimination du tiers le plus humide</strong> répond à la
-    question directement pertinente ici : lorsque la prévision est élevée,
-    le mois observé est-il effectivement parmi les plus humides ? Une
-    corrélation correcte peut coexister avec une discrimination proche du
-    hasard dans la queue haute — c’est précisément le cas qui doit nuancer
-    une alerte.
-  </p>
-  <figure>
-    <img src="plots/bfa_seas5_skill.png"
-         alt="Performance des prévisions SEAS5 à délai de 0 mois par région et par mois : corrélation de Pearson et discrimination du tiers le plus humide, 1981-2025">
-    <figcaption>
-      Méthodologie reprise de
-      <a href="https://github.com/OCHA-DAP/ds-seas5-skill">ds-seas5-skill</a>
-      (normalisation en espace logarithmique de SEAS5 sur la moyenne et
-      l’écart-type d’ERA5, puis corrélation), appliquée ici par mois
-      individuel et par région admin-1 plutôt que par trimestre et par pays.
-      Les cases hachurées ne se distinguent pas statistiquement d’une absence
-      de performance.
-    </figcaption>
-  </figure>
-  <div class="status">
-    <strong>Lecture pour août 2026.</strong>
-    Les deux dépassements ne se valent pas. Pour la
-    <strong>Boucle du Mouhoun</strong>, août est le mois le mieux prévu de la
-    série (corrélation 0,63 ; discrimination 0,77) : le dépassement est faible
-    (+3 %) mais la prévision est fiable. Pour le <strong>Sud-Ouest</strong>,
-    le dépassement est net (+14 %) mais la discrimination du tiers le plus
-    humide en août est de 0,54, statistiquement indistinguable du hasard : la
-    prévision n’a pas démontré de capacité à identifier les mois d’août les
-    plus humides dans cette région. Ce dépassement doit donc être interprété
-    avec prudence.
-  </div>
-  <footer>
-    Code et analyse :
-    <a href="https://github.com/OCHA-DAP/ds-aa-bfa-flooding">OCHA-DAP/ds-aa-bfa-flooding</a>
-    — Centre de données humanitaires (OCHA), équipe science des données.
-  </footer>
-</main>
+
+<script src="assets/hero.js" defer></script>
 </body>
 </html>
